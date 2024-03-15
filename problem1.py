@@ -185,9 +185,21 @@ def compute_da_dz(a):
     '''
     #########################################
     # INSERT YOUR CODE HERE
-    # derivative of a[i] w.r.t. z[j]
-    # a = np.exp(logits) / np.sum(np.exp(logits))
-    da_dz = np.diag(a) - np.outer(a, a)
+    # a = np.exp(z) / np.sum(np.exp(z))
+    # a = e^z / sum(e^z)
+    # da/dz = ((e^z * sum(e^z)) - (e^z * e^z)) / (sum(e^z))^2
+    # = (e^z)(sum(e^z) - e^z) / (sum(e^z))^2
+    # = (e^z / sum(e^z)^2) * (sum(e^z) - e^z / sum(e^z)^2)
+    # = a * (1 - a)
+     
+    c = a.shape[0]
+    da_dz = np.zeros((c, c))
+    for i in range(c):
+        for j in range(c):
+            if i == j:
+                da_dz[i, j] = a[i] * (1 - a[i])
+            else:
+                da_dz[i, j] = -a[i] * a[j]
     #########################################
     return da_dz
 
@@ -300,10 +312,9 @@ def compute_dL_dW(dL_dz, dz_dW):
     '''
     #########################################
     # INSERT YOUR CODE HERE
-    c, f = dz_dW.shape
-    dL_dW = np.zeros((c, f))
-    for i in range(c):
-        for j in range(f):
+    dL_dW = np.zeros((dz_dW.shape))
+    for i in range(dL_dW.shape[0]):
+        for j in range(dL_dW.shape[1]):
             dL_dW[i, j] = dL_dz[i] * dz_dW[i, j]
     #########################################
     return dL_dW
