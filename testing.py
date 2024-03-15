@@ -1,3 +1,3 @@
 from problem1 import *
 
-compute_a(np.array([1000, 10]))
+print((((28 - 2) // 2) + 1)**2)
